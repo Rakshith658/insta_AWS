@@ -1,16 +1,19 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import MyTabs from './src/screens/Navigation';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View >
-      <StatusBar style="auto" />
-      <SafeAreaView style={{marginTop:25}}>
-        <HomeScreen/>
-      </SafeAreaView>
-    </View>
+    <NavigationContainer>
+      <MyTabs/>
+    </NavigationContainer>
   );
 }
 
