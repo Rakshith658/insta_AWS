@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Feather,FontAwesome,FontAwesome5 } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -6,21 +6,26 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const Footer = ({likescount,caption,postedat}) => {
 
     const [isLiked, setIsLike] = useState(false);
+    const [likesCount, setLikesCount] = useState(0);
 
     const onLikePressed = () => {
-        // const amount = isLiked ? -1 : 1;
-        // setLikesCount(likesCount + amount);
-    
+        const amount = isLiked ? -1 : 1;
+        setLikesCount(likesCount + amount);
+
         setIsLike(!isLiked);
-      }
+    }
+
+    useEffect(() =>{
+        setLikesCount(likescount)
+    }, [])
     return (
         <View style={styles.container}>
             <View style={styles.iconsContainer}>
                 <View style={styles.leftIcons}>
                 <TouchableWithoutFeedback onPress={onLikePressed}>
                     {isLiked ?
-                    <Feather name="heart" size={24} color="black" />
-                    : <FontAwesome name="heart" size={24} color="black" />
+                     <FontAwesome name="heart" size={24} color="black" />:
+                     <Feather name="heart" size={24} color="black" />
                     }
                 </TouchableWithoutFeedback>
                 <FontAwesome5 name="comment" size={24} color="#545454" />
@@ -28,7 +33,7 @@ const Footer = ({likescount,caption,postedat}) => {
                 </View>
                 <FontAwesome name="bookmark-o" size={24} color="black" />
             </View>
-            <Text style={styles.likes}>{likescount}Likes</Text>
+            <Text style={styles.likes}>{likesCount}Likes</Text>
             <Text style={styles.caption}>{caption}</Text>
             <Text style={styles.postedat}>{postedat}</Text>
         </View>
