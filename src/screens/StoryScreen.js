@@ -15,6 +15,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useRoute } from '@react-navigation/native';
 import data from '../Data/data'
 import ProfilePic from '../components/ProfilePic';
+import { EvilIcons,Feather } from '@expo/vector-icons';
+import { TextInput } from 'react-native-gesture-handler';
 // import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
@@ -135,7 +137,34 @@ const StoryScreen = ({ navigation, route }) => {
         <SafeAreaView style={styles.container} >
             <TouchableWithoutFeedback onPress={handlePress}>
                 <ImageBackground source={{uri:activeStory.imageUri}} style={styles.image}>
-                    <ProfilePic uri={UserStories.user.imageUri}/>
+                    <View style={styles.userInfo}>
+                        <ProfilePic uri={UserStories.user.imageUri} size={50}/>
+                        <View>
+                            <Text style={styles.userName}>{UserStories.user.name}</Text>
+                            <Text style={styles.postedTime}>{activeStory.postedTime}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.bottomContainer}>
+                        <View style={styles.cameraButton}>
+                            <EvilIcons name="camera" size={24} color="#ffff" />
+                        </View>
+                        <View style={styles.textInputContainer}>
+                            <TextInput
+                                style={styles.textInput}
+                                editable
+                                placeholder="Send message"
+                                placeholderTextColor={"#ffff"}
+                            />
+                        </View>
+                        <View style={styles.messageButton}>
+                            <Feather name="send" size={24} color="#ffff" />
+                        </View>
+                    </View>
+                    {/* <View style={styles.buttomContainer}>
+                        <EvilIcons name="camera" size={24} color="White" />
+                        <TextInput/>
+                        <Feather name="send" size={24} color="White" />
+                    </View> */}
                 </ImageBackground>
             </TouchableWithoutFeedback>
         </SafeAreaView>
@@ -170,22 +199,56 @@ const styles = StyleSheet.create({
     image:{
         flex:1,
         resizeMode:'cover',
-        justifyContent:"center",
+        justifyContent:"space-between",
         width:'100%',
         height:'100%'
     },
-    // main:{
-    //     flex:1,
-    //     flexDirection:"row",
-    // },
-    // left:{
-    //     flex:1,
-    //     // backgroundColor: 'transparent',
-    //     height:"100%"
-    // },
-    // right:{
-    //     flex:1,
-    //     // backgroundColor: 'transparent',
-    //     height:"100%"
-    // }
+    userInfo:{
+        flexDirection:"row",
+        alignItems:"center",
+        marginTop:10
+    },
+    userName:{
+        color:"white",
+        fontWeight:"700",
+        fontSize:18
+    },
+    postedTime: {
+        marginLeft: 10,
+        fontWeight: "700",
+        color: "#808080",
+        fontSize: 16
+      },
+      bottomContainer: {
+        flexDirection: "row",
+        marginBottom: 20,
+        marginHorizontal: 10
+      },
+      cameraButton: {
+        width: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'white',
+        borderRadius: 50,
+      },
+      messageButton: {
+        width: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      textInput: {
+        height: "100%",
+        color: "white",
+        fontSize: 16
+      },
+      textInputContainer: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'white',
+        marginHorizontal: 10,
+        paddingHorizontal: 10,
+        borderRadius: 50,
+        height: 50
+      }
 })
