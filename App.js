@@ -12,10 +12,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import StoryScreen from './src/screens/StoryScreen';
 import StoryStackScreen from './src/screens/StoryScreen';
 
+
+import { withAuthenticator } from 'aws-amplify-react-native'
+import Amplify from 'aws-amplify'
+import config from './src/aws-exports'
+Amplify.configure(config)
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+const App=()=> {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown:false}}>
@@ -25,6 +31,8 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default withAuthenticator(App)
 
 const styles = StyleSheet.create({
   container: {
