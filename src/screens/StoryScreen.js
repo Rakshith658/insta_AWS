@@ -17,6 +17,10 @@ import data from '../Data/data'
 import ProfilePic from '../components/ProfilePic';
 import { EvilIcons,Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
+
+import {API,graphqlOperation}from 'aws-amplify';
+import {listStorys}from '../graphql/queries';
+
 // import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
@@ -24,7 +28,7 @@ const Stack = createStackNavigator();
 const StoryScreen = ({ navigation, route }) => {
 
     const [locationX, setLocationX] = useState(0)
-    const [UserStories, setUserStories] = useState(null)
+    const [stories, setStories] = useState(null)
     const [activeStoryindex, setactiveStoryindex] = useState(null)
     // const [activeStory, setactiveStory] = useState(null)
 
@@ -33,46 +37,61 @@ const StoryScreen = ({ navigation, route }) => {
     
 
 
-    useEffect(() => {
-        const userStories=data.find(Storydata=>Storydata.user.id===userId)
-        setUserStories(userStories)
-        // console.log(userStories);
-        setactiveStoryindex(0)
-    }, [])
+    // useEffect(() => {
+    //     const userStories=data.find(Storydata=>Storydata.user.id===userId)
+    //     setUserStories(userStories)
+    //     // console.log(userStories);
+    //     setactiveStoryindex(0)
+    // }, [])
 
     useEffect(() => {
+        fetchStories();
+        setactiveStoryindex(0);
+    }, []);
 
-        if (!UserStories) {
-            return
+    const fetchStories = async () => {
+        try {
+        const storiesData = await API.graphql(graphqlOperation(listStorys));
+        console.log(storiesData);
+        setStories(storiesData.data.listStorys.items);
+        } catch (e) {
+        console.log('error fetching stories');
+        console.log(e)
         }
-        // setactiveStory(UserStories.stories[activeStoryindex])
+    }
+    // useEffect(() => {
+
+    //     if (!UserStories) {
+    //         return
+    //     }
+    //     // setactiveStory(UserStories.stories[activeStoryindex])
         
-    }, [activeStoryindex])
+    // }, [activeStoryindex])
 
     
 
-    const NavigatetoNextuser = () => {
-        // const d=parseInt(userId)
-        // const id=d+1
-        // const i=toString(id)
-        const id=(parseInt(userId)+1).toString()
-        console.log(id);
-        navigation.push("Story",{id})
-    }
+    // const NavigatetoNextuser = () => {
+    //     // const d=parseInt(userId)
+    //     // const id=d+1
+    //     // const i=toString(id)
+    //     const id=(parseInt(userId)+1).toString()
+    //     console.log(id);
+    //     navigation.push("Story",{id})
+    // }
 
-    const NavigatetoPrevuser = () => {
-        // const d=parseInt(userId)
-        const id=(parseInt(userId)-1).toString()
-        console.log(id);
-        // const i=toString(id)
+    // const NavigatetoPrevuser = () => {
+    //     // const d=parseInt(userId)
+    //     const id=(parseInt(userId)-1).toString()
+    //     console.log(id);
+    //     // const i=toString(id)
         
-        navigation.push("Story",{id})
-    }
+    //     navigation.push("Story",{id})
+    // }
 
     const handlePrevStory=()=>{
         if (activeStoryindex<=0) {
             // setactiveStoryindex(0)
-            NavigatetoPrevuser()
+            // NavigatetoPrevuser()
             return
         }
         console.log("L");
@@ -81,9 +100,9 @@ const StoryScreen = ({ navigation, route }) => {
     }
 
     const handleNextStory=()=>{
-        if (activeStoryindex>=UserStories.stories.length-1) {
+        if (activeStoryindex >= stories.length - 1 ){
             // setactiveStoryindex(UserStories.stories.length-1)
-            NavigatetoNextuser();
+            // NavigatetoNextuser();
             return
         }
         console.log("R");
@@ -103,45 +122,41 @@ const StoryScreen = ({ navigation, route }) => {
     }
   
     
-    if (!UserStories) {
-        return(
-            <SafeAreaView style={{
-                flex: 1,
-                backgroundColor: '#fff',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop:25
-            }}>
-                <ActivityIndicator/>
-            </SafeAreaView>
+    if (!stories || stories.length === 0) {
+        return (
+          <SafeAreaView>
+            <ActivityIndicator />
+          </SafeAreaView>
         )
-    }
+      }
 
-    const activeStory=UserStories.stories[activeStoryindex]
+    
 
-    console.log(activeStory.imageUri);
-    if (!activeStory) {
-        return(
-            <SafeAreaView style={{
-                flex: 1,
-                backgroundColor: '#fff',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop:25
-            }}>
-                <ActivityIndicator/>
-            </SafeAreaView>
-        )
-    }
+    const activeStory = stories[activeStoryindex];
+
+    // console.log(activeStory.imageUri);
+    // if (!activeStory) {
+    //     return(
+    //         <SafeAreaView style={{
+    //             flex: 1,
+    //             backgroundColor: '#fff',
+    //             alignItems: 'center',
+    //             justifyContent: 'center',
+    //             marginTop:25
+    //         }}>
+    //             <ActivityIndicator/>
+    //         </SafeAreaView>
+    //     )
+    // }
     return (
         <SafeAreaView style={styles.container} >
             <TouchableWithoutFeedback onPress={handlePress}>
-                <ImageBackground source={{uri:activeStory.imageUri}} style={styles.image}>
+                <ImageBackground source={{uri:activeStory.image}} style={styles.image}>
                     <View style={styles.userInfo}>
-                        <ProfilePic uri={UserStories.user.imageUri} size={50}/>
+                        <ProfilePic uri={activeStory.user.image} size={50}/>
                         <View>
-                            <Text style={styles.userName}>{UserStories.user.name}</Text>
-                            <Text style={styles.postedTime}>{activeStory.postedTime}</Text>
+                            <Text style={styles.userName}>{activeStory.user.name}</Text>
+                            <Text style={styles.postedTime}>{activeStory.createdAt}</Text>
                         </View>
                     </View>
                     <View style={styles.bottomContainer}>

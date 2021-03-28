@@ -5,11 +5,12 @@ import Footer from './Postes/Footer'
 import Header from './Postes/Header'
 
 const Post = ({post}) => {
+    console.log(post);
     return (
         <View>
-            <Header imageUri={post.user.imageUri} name={post.user.name}/>
-            <Body imageUri={post.imageUri}/>
-            <Footer likescount={post.likescount} caption={post.caption} postedat={post.postedat}/>
+            <Header imageUri={post.user.image} name={post.user.name}/>
+            <Body imageUri={post.image}/>
+            <Footer likescount={post.likes} caption={post.Caption} postedat={post.createdAt}/>
         </View>
     )
 }
